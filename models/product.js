@@ -19,6 +19,7 @@ const productSchema = new mongoose.Schema({
     },
     category: {
         type: String,
+        lowercase: true,// This will make all categories lowercase
         enum: ['fruit', 'vegetable', 'dairy']
     }
 });
