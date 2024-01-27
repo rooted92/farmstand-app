@@ -17,12 +17,28 @@ mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp')
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+// this tells express to parse the body of the request, and add it to the body property in the request object, in simple terms it allows us to access the data from the form in req.body
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/products', async (req, res) => {
     const foundProducts = await Product.find({});
     console.log(foundProducts);
     // Remember that the second argument passed in to res.render is an object that contains all of the data we want to pass into the template
     res.render('products/index.ejs', { foundProducts });
+});
+
+app.get('/products/new', (req, res) => {
+    res.render('products/new.ejs');
+});
+
+app.post('/products', async (req, res) => {
+    // Make the new product using the data from the form
+    const newProduct = new Product(req.body);
+    // Save the new product to the database
+    await newProduct.save();
+    // console.log(newProduct);
+    // Redirect to the page for the new product, using the mongo id of the new product hence the underscore
+    res.redirect(`/products/${newProduct._id}`);
 });
 
 app.get('/products/:id', async (req, res) => {
