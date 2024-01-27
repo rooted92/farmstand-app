@@ -25,7 +25,14 @@ app.get('/products', async (req, res) => {
     res.render('products/index.ejs', { foundProducts });
 });
 
-app.get('/products/:id')
+app.get('/products/:id', async (req, res) => {
+    // Destrucure the id of product from req.params
+    const { id } = req.params;
+    // Find the product in the database with the id
+    const foundProduct = await Product.findById(id);
+    // Render the show template with the foundProduct
+    res.render('products/details.ejs', { foundProduct });
+})
 
 app.listen('3000', () => {
   console.log('Server started on port 3000');
