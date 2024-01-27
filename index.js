@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+
 
 // Require the model we created in models/product.js
 const Product = require('./models/product');
@@ -18,7 +20,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp')
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 // this tells express to parse the body of the request, and add it to the body property in the request object, in simple terms it allows us to access the data from the form in req.body
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 
 app.get('/products', async (req, res) => {
     const foundProducts = await Product.find({});
@@ -29,6 +32,21 @@ app.get('/products', async (req, res) => {
 
 app.get('/products/new', (req, res) => {
     res.render('products/new.ejs');
+});
+
+app.get('/products/:id/edit', async (req, res) => {
+    // Destructure the id from req.params
+    const { id } = req.params;
+    // Find the product in the database with the id
+    const productToUpdate = await Product.findById(id);
+    res.render('products/edit.ejs', { productToUpdate });
+});
+
+app.put('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    // Find the product in the database with the id, and update it with the data from the form
+    const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
+    res.redirect(`/products/${updatedProduct._id}`);
 });
 
 app.post('/products', async (req, res) => {
