@@ -16,10 +16,9 @@
         <input type="number" id="price" name="price" placeholder="Enter price" value="<%= productToUpdate.price %>">
         <label for="category">Category</label>
         <select name="category" id="category">
-            <option value="fruit" <% if(productToUpdate.category === 'fruit' ) { %>selected<% } %>>Fruit</option>
-            <option value="vegetable" <% if(productToUpdate.category === 'vegetable' ) { %>selected<% } %>>Vegetable
-            </option>
-            <option value="dairy" <% if(productToUpdate.category === 'dairy' ) { %>selected<% } %>>Dairy</option>
+            <% for(let category of categories){ %>
+                <option value="<%= category %>" <%= productToUpdate.category === category ? 'selected' : ''; %>><%= category %></option>
+            <% } %>
         </select>
         <button>Submit</button>
     </form>

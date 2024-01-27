@@ -23,15 +23,24 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+// This array is so we can loop over it and display the categories in the new product form by adding the selected attibute to the option tag
+const categories = ['fruit', 'vegetable', 'dairy', 'fungi', 'baked goods'];
+
 app.get('/products', async (req, res) => {
-    const foundProducts = await Product.find({});
-    console.log(foundProducts);
+    const { category } = req.query;
+    if(category){
+        const foundProducts = await Product.find({ category })
+        res.render('products/index.ejs', { foundProducts, category });
+    } else {
+        const foundProducts = await Product.find({});
+        res.render('products/index.ejs', { foundProducts, category: 'All'});
+    }
     // Remember that the second argument passed in to res.render is an object that contains all of the data we want to pass into the template
-    res.render('products/index.ejs', { foundProducts });
+   
 });
 
 app.get('/products/new', (req, res) => {
-    res.render('products/new.ejs');
+    res.render('products/new.ejs', { categories});
 });
 
 app.get('/products/:id/edit', async (req, res) => {
@@ -39,7 +48,7 @@ app.get('/products/:id/edit', async (req, res) => {
     const { id } = req.params;
     // Find the product in the database with the id
     const productToUpdate = await Product.findById(id);
-    res.render('products/edit.ejs', { productToUpdate });
+    res.render('products/edit.ejs', { productToUpdate, categories });
 });
 
 app.put('/products/:id', async (req, res) => {
@@ -66,6 +75,13 @@ app.get('/products/:id', async (req, res) => {
     const foundProduct = await Product.findById(id);
     // Render the show template with the foundProduct
     res.render('products/details.ejs', { foundProduct });
+})
+
+app.delete('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    // Delete the product from the database
+    await Product.findByIdAndDelete(id);// we are awaiting this so that we can redirect to the products page after the product is deleted
+    res.redirect('/products');
 })
 
 app.listen('3000', () => {
