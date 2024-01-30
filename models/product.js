@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { stringify } = require('querystring');
 // Need to require mongoose in order to use it, since we will be using it to create a schema
 // Also no need to connect to the database here, since we already did that in index.js and we will require this model in index.js
 

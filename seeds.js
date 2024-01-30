@@ -1,7 +1,7 @@
 const Product = require('./models/product');
 const mongoose = require('mongoose');   
 
-mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp')
+mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp2')
     .then(() => {
         console.log("Mongo Connection Open");
     }).catch(err => {
@@ -13,7 +13,7 @@ const p = new Product({
     name: 'Ruby Grapefruit',
     price: 1.99,
     category: 'fruit'
-}); // This will not save to the database, since it does not meet the schema requirements
+});
 
 p.save().then(p => {
     console.log(p);
