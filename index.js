@@ -45,6 +45,37 @@ app.post('/farms', async (req, res) => {
     res.redirect('/farms');
 });
 
+app.get('/farms/:id', async (req, res) => {
+    const { id } = req.params;
+    const farm = await Farm.findById(id).populate('products');
+    console.log(farm)
+    res.render('farms/show.ejs', { farm });
+});
+
+app.delete('/farms/:id', async (req, res) => {
+    const { id } = req.params;
+    const farm = await Farm.findByIdAndDelete(id);
+    
+    res.redirect('/farms');
+});
+
+app.get('/farms/:id/products/new', async (req, res) => {
+    const { id } = req.params;
+    const farm = await Farm.findById(id);
+    res.render('products/new.ejs', { categories, farm });
+});
+
+app.post('/farms/:id/products', async (req, res) => {
+    const { id } = req.params;
+    const farm = await Farm.findById(id);
+    const newProduct = new Product(req.body);
+    farm.products.push(newProduct);
+    newProduct.farm = farm;
+    await farm.save();
+    await newProduct.save();
+    res.redirect(`/farms/${farm._id}`);
+});
+
 // Product Routes
 
 // This is a function that takes in a function as an argument, and returns a new function that wraps the original function in a try catch block
@@ -108,7 +139,8 @@ app.get('/products/:id', wrapAsync(async (req, res, next) => {
     // Destrucure the id of product from req.params
     const { id } = req.params;
     // Find the product in the database with the id
-    const foundProduct = await Product.findById(id);
+    const foundProduct = await Product.findById(id).populate('farm', 'name');
+    console.log(foundProduct);
     if (!foundProduct) {
         throw new AppError('Product Not Found CHANGED@@@@', 404);
     }
