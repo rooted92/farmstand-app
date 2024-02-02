@@ -1,7 +1,7 @@
 const Product = require('./models/product');
 const mongoose = require('mongoose');   
 
-mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp')
+mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp2')
     .then(() => {
         console.log("Mongo Connection Open");
     }).catch(err => {
