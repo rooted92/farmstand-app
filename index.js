@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 
 // Require the model we created in models/product.js
 const Product = require('./models/product');
+const Farm = require('./models/farm');
 
 mongoose.connect('mongodb://127.0.0.1:27017/farmStandApp')
     .then(() => {
@@ -25,6 +26,24 @@ app.use(methodOverride('_method'));
 
 // This array is so we can loop over it and display the categories in the new product form by adding the selected attibute to the option tag
 const categories = ['fruit', 'vegetable', 'dairy', 'fungi', 'baked goods'];
+
+// Farm Routes
+
+app.get('/farms', (req, res) => {
+    res.send('Index of all farms');
+});
+
+app.get('/farms/new', (req, res) => {
+    res.render('farms/new.ejs');
+});
+
+app.post('/farms', async (req, res) => {
+    const newFarm = new Farm(req.body);
+    await newFarm.save();
+    res.redirect('/farms');
+});
+
+// Product Routes
 
 app.get('/products', async (req, res) => {
     const { category } = req.query;
