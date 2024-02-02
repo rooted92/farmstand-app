@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { stringify } = require('querystring');
+const { Schema } = mongoose;
 // Need to require mongoose in order to use it, since we will be using it to create a schema
 // Also no need to connect to the database here, since we already did that in index.js and we will require this model in index.js
 
@@ -21,6 +21,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         lowercase: true,// This will make all categories lowercase
         enum: ['fruit', 'vegetable', 'dairy', 'fungi', 'baked goods']
+    },
+    farm: {
+        type: Schema.Types.ObjectId,
+        ref: 'Farm'
     }
 });
 
