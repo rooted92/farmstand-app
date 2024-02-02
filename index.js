@@ -30,8 +30,9 @@ const categories = ['fruit', 'vegetable', 'dairy', 'fungi', 'baked goods'];
 
 // Farm Routes
 
-app.get('/farms', (req, res) => {
-    res.send('Index of all farms');
+app.get('/farms', async (req, res) => {
+    const farms = await Farm.find({});
+    res.render('farms/index.ejs', { farms });
 });
 
 app.get('/farms/new', (req, res) => {
@@ -46,7 +47,6 @@ app.post('/farms', async (req, res) => {
 
 // Product Routes
 
-app.get('/products', async (req, res) => {
 // This is a function that takes in a function as an argument, and returns a new function that wraps the original function in a try catch block
 function wrapAsync(fn) {
     return function (req, res, next) {
